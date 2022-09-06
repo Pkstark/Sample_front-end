@@ -9,8 +9,7 @@ function Signup() {
   const [username, setusername] = useState('');
   const [email, setemail] = useState('');
   const [password, setpassword] = useState('');
-  const [confrimpassword, setconfrimpassword] = useState('');
-  const [isError, setisError] = useState('')
+  const [confrimpassword, setconfrimpassword] = useState('')
 
   const navigate = useNavigate();
 
@@ -25,36 +24,47 @@ function Signup() {
   const HandleSubmit = (e) => {
     e.preventDefault();
 
-    const insert = {
-      username: username,
-      email: email,
-      password: password,
-      confrimpassword: confrimpassword
-    }
-
-    axios.post('https://server-i.herokuapp.com/signup', insert).then((data) => {
-      console.log(data);
-      if (data.data.status === 1) {
-        toast.success(data.data.message, toastOptions);
-        setTimeout(() => {
-          navigate("/signin")
-        }, 2000);
-      } else {
-        toast.error(data.data.error, toastOptions);
+    if(HandleValidation()){
+      const insert = {
+        username: username,
+        email: email,
+        password: password,
+        confrimpassword: confrimpassword
       }
-    })
-  }
-
-  const checkValidate = (e) => {
-    const confPassword = e.target.value;
-    setconfrimpassword(confPassword);
-    if (password !== confPassword) {
-      setisError("Password Must Same, Please Chect Passowrd!!!")
-    } else {
-      toast.success("password Same", toastOptions)
-      setisError('')
+  
+      axios.post('http://localhost:8000/register', insert).then((data) => {
+        console.log(data);
+        if (data.data.status === 1) {
+          toast.success(data.data.message, toastOptions);
+          setTimeout(() => {
+            navigate("/signin")
+          }, 1500);
+        } else {
+          toast.error(data.data.error, toastOptions);
+        }
+      })
     }
   }
+
+
+  const HandleValidation = (e) => {
+    if(username === "" || email === ""){
+      toast.error("Field is Required",toastOptions)
+      return false
+    }else if(password === "" || confrimpassword === ""){
+      toast.error("Password is Required",toastOptions)
+      return false
+    }else if(password != confrimpassword){
+      toast.error("Password Should be Same",toastOptions)
+      return false
+    }else if(password.length < 6 || confrimpassword.length < 6){
+      toast.error("Password Should be 7 Character",toastOptions)
+      return false
+    }
+
+    return true
+  }
+
 
 
   return (
@@ -63,43 +73,45 @@ function Signup() {
       <div className='container'>
 
         <div className='row'>
-          <div className='col s10 offset-s1'>
-            <div className='card'>
+          <div className='col s10 bg1 offset-s1'>
+            <div className='card bg2 z-depth-4'>
               <form onSubmit={HandleSubmit}>
                 <h4 className='center'>SignUp</h4>
                 <div className='card-content'>
                   <div className="row">
                     <div className="input-field col s12">
                       <i className='material-icons prefix'>account_circle</i>
-                      <input id="username" type="text" className="validate" placeholder='UserName' required name='username' onChange={(e) => setusername(e.target.value)} />
+                      <input id="username" type="text" className="validate" placeholder='UserName'  name='username' onChange={(e) => setusername(e.target.value)} />
                     </div>
                   </div>
 
                   <div className="row">
                     <div className="input-field col s12">
                       <i className='material-icons prefix'>email</i>
-                      <input id="email" type="text" className="validate" placeholder='Email' required name='email' onChange={(e) => setemail(e.target.value)} />
+                      <input id="email" type="text" className="validate" placeholder='Email'  name='email' onChange={(e) => setemail(e.target.value)} />
                     </div>
                   </div>
                   <div className="row">
                     <div className="input-field col s12">
                       <i className='material-icons prefix'>visibility</i>
-                      <input id="password" type="password" className="validate" placeholder='Password' required name='password' onChange={(e) => setpassword(e.target.value)} />
+                      <input id="password" type="password" className="validate" placeholder='Password'  name='password' onChange={(e) => setpassword(e.target.value)} />
                     </div>
                   </div>
 
                   <div className="row">
                     <div className="input-field col s12">
                       <i className='material-icons prefix'>visibility</i>
-                      <input id="confpassword" type="password" className="validate" placeholder='ConfrimPassword' required name='confpassword' onChange={(e) => checkValidate(e)} />
+                      <input id="confpassword" type="password" className="validate" placeholder='ConfrimPassword'  name='confpassword'  onChange={(e) => setconfrimpassword(e.target.value)}/>
                     </div>
                   </div>
+
                   <div className='center'>
-                    <p className='style'>{isError}</p>
+                    <span className='bg4 '>Already have a Account Please <a href='/signin'>Signin !!!</a></span>
                   </div>
+
                 </div>
                 <div className='card-action center'>
-                  <button className='btn' type='submit'>Register</button>
+                  <button className='btn' type='submit'>SignUP</button>
                 </div>
               </form>
             </div>

@@ -8,3 +8,74 @@
   width: 250px;
   text-align: center;
 }
+
+.bg{
+  background-image: url('./Assest/img.jpg');
+  height: 100vh;
+  position: relative;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.bg13{
+  margin-top: 12px;
+  background-color: transparent;
+}
+.bg5{
+  padding: 15px;
+  background-color:lightyellow;
+  border-radius: 20px;
+}
+.bg6{
+  margin-top: 50px;
+  width: 200px;
+  background-color: #424242;
+  border-radius: 5px;
+}
+.bg7{
+  margin-top: 35px;
+}
+.bg12{
+  font-size: 20px;
+}
+.bg15{
+  border-radius: 10px;
+  border: solid grey 2px;
+  margin-top: 50px;
+  background-color:lightyellow;
+}
+
+.bg8{
+  background-color:lightyellow;
+  border: solid grey 1px ;
+  border-radius: 10px;
+  padding: 10px;
+}
+.bg11{
+  width: 150px;
+  background-color: #424242;
+  border-radius: 5px;
+}
+.bg10{
+  height: 80px;
+  border-radius: 10px;
+  border: solid grey 1px;
+  padding: 10px;
+}
+.bg16{
+  background-color:lightyellow;
+}
+
+.bg1{
+  margin-top: 30px;
+}
+.bg2{
+ border-radius: 10px;
+ background-color:lightyellow;
+}
+.bg3{
+ margin-top: 115px;
+}
+.bg4{
+ font-size: 20px;
+ justify-content: center;
+}

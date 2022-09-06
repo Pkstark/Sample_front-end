@@ -1,190 +1,236 @@
 import React, { useEffect, useState } from 'react'
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import M from 'materialize-css/dist/js/materialize.min.js';
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
+import M from 'materialize-css/dist/js/materialize.min.js';
+import {ToastContainer, toast} from 'react-toastify'
 
 function Profile() {
+  const [UserData, setUserData] = useState('');
+  const [Apply, setApply] = useState('')
 
-  const [UserData, setUserData] = useState('')
-
-  const email = localStorage.getItem('email');
-  const navigate = useNavigate();
+  const email = localStorage.getItem("email");
 
   const toastOptions = {
     position: "bottom-right",
     autoClose: 4000,
-    pauseOnHover: true,
+    pauseOnHover: false,
     draggable: true,
     theme: "dark",
-  };
+  }
 
-  useEffect(() => {
-    getData();
-  }, [])
-
-
-  const getData = () => {
+  const GetData = () => {
     const insert = {
       email: email
     }
-    axios.post("https://server-i.herokuapp.com/getdata", insert).then((data) => {
-      console.log(data);
+
+    axios.post("http://localhost:8000/getleave", insert).then((data) => {
+      console.log(data)
       setUserData(data.data.result)
     })
   }
 
-  const Trigger = (e) => {
+  useEffect(() => {
+    GetData();
+  }, [])
+
+  const Trigger = () => {
     var elems = document.querySelectorAll('.modal');
-    var trig = M.Modal.init(elems, {});
+    var trigg = M.Modal.init(elems, {})
   }
 
-  const Handlechange = (e) => {
-    const id = e.target.id
-    const value = e.target.value
-
-    setUserData((prevState) => ({
-        ...prevState,
-        [id]: value
-    }))
+  const HandleChange =(e) => {
+    const name = e.target.name;
+    setApply({...Apply,[name] : e.target.value})
   }
 
-  const HandleUpdate = (e) => {
+  const HandleSubmit =(e)  => {
     e.preventDefault();
 
-    const pk = {
-      username : UserData.username,
-      email : UserData.email,
-      age : UserData.age,
-      dob : UserData.dob,
-      gender : UserData.gender,
-      phoneno : UserData.phoneno
+    const date1 = new Date(Apply.start)
+    const date2 = new Date(Apply.end)
+
+    const Different = date2.getTime() - date1.getTime()
+    const Days = Different/(1000 * 60 * 60 *24)
+
+    if(Apply.name === "sickleave"){
+      const dd = UserData.sickleave + Days
+      const tt = UserData.balanceleave - Days
+      const kk = (UserData.sickleave + UserData.casualleave) + dd
+      console.log(kk)
+      const insert = {
+        sickleave : dd,
+        balanceleave : tt,
+        appiledleave : kk
+      }
+      axios.post(`http://localhost:8000/leave/${UserData._id}`,insert).then((data) => {
+        console.log(data)
+        if(data.data.status === 1){
+          toast.success(data.data.message,toastOptions)
+          GetData();
+        }else if(data.data.status === 0){
+          toast.error(data.data.error,toastOptions)
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
     }
 
-    axios.post(`https://server-i.herokuapp.com/userupdate/${UserData._id}`,pk).then((data) => {
-      console.log(data);
-      if(data.data.status === 1){
-        toast.success(data.data.message,toastOptions)
-      }else{
-        toast.error(data.data.message,toastOptions)
+    if(Apply.name === "casualleave"){
+      const dd = UserData.casualleave+ Days
+      const tt = UserData.balanceleave - Days
+      const kk = (UserData.sickleave + UserData.casualleave) + dd
+      console.log(kk)
+      const insert = {
+        casualleave : dd,
+        balanceleave : tt,
+        appiledleave : kk
       }
-    }).catch((err) => {
-      console.log(err)
-    })
+
+      axios.post(`http://localhost:8000/leave/${UserData._id}`,insert).then((data) => {
+        console.log(data)
+        if(data.data.status === 1){
+          toast.success(data.data.message,toastOptions);
+          GetData();
+        }else if( data.data.status === 0){
+          toast.error(data.data.error,toastOptions);
+          GetData();
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    }
+
+    if(Apply.name === "earnleave"){
+
+      const dd = UserData.earnleave + Days
+      const tt = UserData.balanceleave - Days
+      const kk = (UserData.sickleave + UserData.casualleave) + dd
+      console.log(kk)
+
+      const insert = {
+        earnleave : dd,
+        balanceleave : tt,
+        appiledleave : kk
+      }
+
+      axios.post(`http://localhost:8000/leave/${UserData._id}`,insert).then((data) => {
+        console.log(data)
+        if(data.data.status === 1){
+          toast.success(data.data.message,toastOptions);
+          GetData();
+        }else if( data.data.status === 0){
+          toast.error(data.data.error,toastOptions);
+          GetData();
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    }
+
+    document.getElementById('start').value = null;
+    document.getElementById('end').value = null;
+    document.getElementById('message').value = null;
+
   }
 
-  const posted = (e) => {
-    e.preventDefault();
-    navigate("/signin")
-  }
 
   return (
     <div>
-
-
-      <nav className='orange'>
-        <div className="nav-wrapper container">
-          <a href="" className="brand-logo" >Profile</a>
-          <ul className="right">
-            <li><a href="" onClick={posted}>Logout</a></li>
-          </ul>
+      
+      <nav className="nav-wraper indigo accent-1">
+        <div className="container">
+          <div>
+            <a className="brand-logo left">LOGO</a>
+            <a className='btn bg13 right' href='/signin'>Logout</a>
+          </div>
         </div>
       </nav>
 
-
       <div className='container'>
-        <h5 className='center'>Welcome &nbsp;{UserData.username}</h5>
         <div className='row'>
-          <div className='card '>
-            <div className='card-content'>
-              <div className='row'>
-                <div className='col s6'>
-                  <p>UserName : {UserData.username}</p>
-                </div>
-                <div className='col s6'>
-                  <p>Email : {UserData.email}</p>
-                </div>
-              </div>
-              <div className='row'>
-                <div className='col s6'>
-                  {UserData.age === "" ? (<div></div>) : (<div>
-                    <p>Age : &nbsp; {UserData.age}</p>
-                  </div>)}
-                </div>
-                <div className='col s6'>
-                  {UserData.gender === "" ? (<div></div>) : (<div>
-                    <p>Gender : &nbsp; {UserData.gender}</p>
-                  </div>)}
-                </div>
-              </div>
-              <div className='row'>
-                <div className='col s6'>
-                  {UserData.dob === "" ? (<div></div>) : (<div>
-                    <p>DOB : &nbsp; {UserData.dob}</p>
-                  </div>)}
-                </div>
-                <div className='col s6'>
-                  {UserData.phoneno === "" ? (<div></div>) : (<div>
-                    <p>Mobile : &nbsp; {UserData.phoneno}</p>
-                  </div>)}
-                </div>
-              </div>
-              <div className='row'>
-                <div className='col s12'>
-                  <button className='btn right blue modal-trigger' data-target="change" onClick={Trigger}>UpdateProfile</button>
-                </div>
-              </div>
-            </div>
+          <div className='col s6 left bg7'>
+            <h5>Leave Data : </h5>
+          </div>
+          <div className='col s6'>
+            <button className='btn right bg6 modal-trigger' data-target="change" onClick={(e) => Trigger(e)} disabled = {UserData.balanceleave === 0}>Applyleave</button>
+          </div>
+        </div>
+        
+        <div className='card bg5'>
+          <div className='card-content'>
+            {UserData.balanceleave === 0 ? (<div className='center'><span className='bg12' style={{color : "red"}}>You Already Reached Limit You Can't Apply Leave</span></div>) : (<div></div>)}<br/>
+            <h5 className='center'>{UserData.username} Leave Details</h5><br />
+            <table>
+              <thead>
+                <tr>
+                  <th className='center'>UserName</th>
+                  <th className='center'>Sick Leave</th>
+                  <th className='center'>Casual Leave</th>
+                  <th className='center'>Paid Leave</th>
+                  <th className='center'>Total Number Leave</th>
+                  <th className='center'>No of Applied Leave</th>
+                  <th className='center'>Balance Leave</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td className='center'>{UserData.username}</td>
+                  <td className='center'>{UserData.sickleave}</td>
+                  <td className='center'>{UserData.casualleave}</td>
+                  <td className='center'>{UserData.earnleave}</td>
+                  <td className='center'>{UserData.totalnumberleaves}</td>
+                  <td className='center'>{UserData.appiledleave}</td>
+                  <td className='center'>{UserData.balanceleave}</td>
+                  
+                </tr>
+              </tbody>
+            </table><br/>
           </div>
         </div>
       </div>
 
-      <div id="change" className="modal">
-        <h5 className='center'>Update Profile</h5>
-        <form encType="multipart/form-data">
+      <div id="change" className="modal z-depth-4 bg15">
+        <form>
           <div className="modal-content">
-            <div className='row '>
-              <div className='input-field col s6 '>
-                <input type="text" className="validate" id='username' value={UserData.username} name='username' onChange={(e) => Handlechange(e)} required />
-              </div>
+            <h5 className='center'>Apply Leave</h5>
 
-              <div className='input-field col s6 '>
-                <input type="text" className="validate" id='email' value={UserData.email} name='email' onChange={(e) => Handlechange(e)} required />
-              </div>
-            </div>
-            <div className='row '>
-              <div className='input-field col s6 '>
-                <input type="text" className="validate" id='age' placeholder='age' value={UserData.age} name='age' onChange={(e) => Handlechange(e)} required />
-              </div>
-
-              <div className='input-field col s6 '>
-                <select id='gender' className="browser-default" value={UserData.gender} name='gender' onChange={(e) => Handlechange(e)} required>
-                  <option>Gender</option>
-                  <option >Male</option>
-                  <option >Female</option>
+            <div className='row'>
+              <div className='col s12'>
+                <span>Catagroy : </span><br/><br/>
+                <select className='browser-default bg8' name= "name" onChange={(e) => HandleChange(e)}>
+                  <option value={"earnleave"}>Earn Leave</option>
+                  <option value={"casualleave"}>Casual Leave</option>
+                  <option value={"sickleave"}>Sick Leave</option>
                 </select>
               </div>
-            </div>
-
-            <div className='row '>
-              <div className='input-field col s6 '>
-                <input type="date" placeholder='Date of Birth' className='browser-default style1' id = "dob" name='dob' value={UserData.dob} onChange={(e) => Handlechange(e)}/>
+            </div><br/>
+            <div className='row'>
+              <div className='col s6'>
+                <span>Start Date : </span><br/>
+                <input id='start' type="date" className='bg9' name='start' onChange={(e) => HandleChange (e)}/>
               </div>
-
-              <div className='input-field col s6 '>
-                <input type="text" className="validate" id='phoneno'  placeholder='Phone Number' value={UserData.phoneno} onChange={(e) => Handlechange(e)} name='phoneno' required />
+              <div className='col s6'>
+                <span>End Date : </span><br/>
+                <input id='end' type="date" className='bg9' name='end' onChange={(e) => HandleChange (e)}/>
+              </div>
+            </div>
+            <div className='row'>
+              <div className='col s12'>
+                <span>Message : </span><br/>
+                <textarea id='message' name='message' className='bg10'/>
               </div>
             </div>
           </div>
-
-          <div className="modal-footer">
-            <button className='btn indigo modal-close' onClick={HandleUpdate}>Update</button>
+          <div className="modal-footer bg16">
+            <button type='submit' className='btn mod modal-close bg11' onClick={HandleSubmit}>Apply</button>
           </div>
         </form>
       </div>
-      <ToastContainer />
-    </div>
+
+      <ToastContainer/>
+
+      </div>
+
   )
 }
 
