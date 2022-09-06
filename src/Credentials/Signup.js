@@ -75,7 +75,7 @@ function Signup() {
         <div className='row'>
           <div className='col s10 bg1 offset-s1'>
             <div className='card bg2 z-depth-4'>
-              <form onSubmit={HandleSubmit}>
+              <form onSubmit={HandleSubmit}><br/>
                 <h4 className='center'>SignUp</h4>
                 <div className='card-content'>
                   <div className="row">

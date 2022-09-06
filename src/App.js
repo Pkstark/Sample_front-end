@@ -3,7 +3,7 @@ import './App.css'
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import SignUp from './Credentials/Signup';
 import SignIn from './Credentials/Signin';
-import Profile from './Credentials/Profile'
+import Dashboard from './Credentials/Dashborad'
 
 function App() {
   return (< div className='bg'>
@@ -11,7 +11,7 @@ function App() {
     <Routes>
       <Route path='/' element={<SignUp/>}/>
       <Route path='/signin' element={<SignIn/>}/>
-      <Route path='/profile' element={<Profile/>}/>
+      <Route path='/profile' element={<Dashboard/>}/>
     </Routes>
   </BrowserRouter>
   </div>
