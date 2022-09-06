@@ -222,6 +222,7 @@ function Profile() {
             </div>
           </div>
           <div className="modal-footer bg16">
+          <button type='submit' className='btn mod modal-close bg11'>Cancel</button>&nbsp;&nbsp;
             <button type='submit' className='btn mod modal-close bg11' onClick={HandleSubmit}>Apply</button>
           </div>
         </form>
