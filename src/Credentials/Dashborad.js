@@ -54,7 +54,8 @@ function Profile() {
     if(Apply.name === "sickleave"){
       const dd = UserData.sickleave + Days
       const tt = UserData.balanceleave - Days
-      const kk = (UserData.sickleave + UserData.casualleave) + dd
+      const kk = UserData.sickleave + UserData.casualleave + UserData.earnleave + Days
+
       console.log(kk)
       const insert = {
         sickleave : dd,
@@ -77,7 +78,8 @@ function Profile() {
     if(Apply.name === "casualleave"){
       const dd = UserData.casualleave+ Days
       const tt = UserData.balanceleave - Days
-      const kk = (UserData.sickleave + UserData.casualleave) + dd
+      const kk = UserData.sickleave + UserData.casualleave + UserData.earnleave + Days
+      
       console.log(kk)
       const insert = {
         casualleave : dd,
@@ -103,7 +105,9 @@ function Profile() {
 
       const dd = UserData.earnleave + Days
       const tt = UserData.balanceleave - Days
-      const kk = (UserData.sickleave + UserData.casualleave) + dd
+
+      const kk = UserData.sickleave + UserData.casualleave + UserData.earnleave + Days
+
       console.log(kk)
 
       const insert = {
